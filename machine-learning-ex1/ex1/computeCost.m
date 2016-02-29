@@ -14,6 +14,10 @@ J = 0;
 %               You should set J to the cost.
 
 
+tmp = (X*theta - y);
+
+J = dot( tmp , tmp )/(2.*m)
+
 
 
 
