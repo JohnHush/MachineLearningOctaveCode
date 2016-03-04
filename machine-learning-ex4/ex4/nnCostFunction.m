@@ -62,7 +62,47 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+X = [ones( m , 1) , X];
+a2 = sigmoid(Theta1*X');
+a2 = [ ones( 1 , size(a2, 2)) ; a2];
+a3 = sigmoid(Theta2*a2);
+y_decode = zeros( size(a3 , 1) , size( a3 , 2));
+for j = 1:m
+    y_decode( y(j) , j ) = 1;
+end
 
+J = (sum(sum( -y_decode.*log(a3)-(1-y_decode).*log(1-a3)  )))/m;
+
+J = J + ( sum( sum(Theta1.^2)(2:end) ) + sum( sum(Theta2.^2)(2:end) )  )*(lambda/(2*m));
+
+delta3 = a3 - y_decode;
+
+delta2 = ((Theta2'*delta3)(2:end , :)).*sigmoidGradient( Theta1*X');
+
+for i = 1:m 
+    Theta1_grad = Theta1_grad + (delta2(:, i) * X( i , :) );
+    Theta2_grad = Theta2_grad + (delta3(:, i))*(a2(:,i))';
+end
+
+Theta1_grad /=m;
+Theta2_grad /=m;
+
+Theta1_grad += (lambda/m)*[zeros( size( Theta1, 1) , 1) , Theta1(:,2:end )];
+Theta2_grad += (lambda/m)*[zeros( size( Theta2, 1) , 1) , Theta2(:,2:end )];
+
+
+%for i = 1:m
+%    a_layer2 = sigmoid(Theta1*[1 ; X( i , : )(:)]);
+%    a_layer3 = sigmoid(Theta2*[1 ; a_layer2]);
+
+%    y_decode = zeros( num_labels , 1 );
+%    y_decode( y(i) ) = 1;
+
+%    J = J + sum( -y_decode.*log(a_layer3) - (1-y_decode).*log(1-a_layer3)) ;
+
+%end
+
+%J = J/m;
 
 
 
